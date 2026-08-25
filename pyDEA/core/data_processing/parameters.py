@@ -25,8 +25,8 @@ VALID_PARAM_NAME = r'\w[\w ]*'
 # must start with any non-space character,
 # all other characters are allowed,
 # since file paths must be treated
-VALID_PARAM_VALUE = r'\S.*|(?imsux)' #previously r'\S.*|(?iLmsux)' causing error "cannot use LOCALE flag with a str pattern" with Python>=3.6
-
+# VALID_PARAM_VALUE = r'\S.*|(?imsux)' #previously r'\S.*|(?iLmsux)' causing error "cannot use LOCALE flag with a str pattern" with Python>=3.6
+VALID_PARAM_VALUE = r'(?imsux)\S.*|' # previously r'\S.*|(?imsux)' which is also not valid due to having the inline modifier at the end of the expression
 VALID_PARAM_NAMES = ['DATA_FILE', 'INPUT_CATEGORIES', 'OUTPUT_CATEGORIES',
                      'DEA_FORM', 'RETURN_TO_SCALE', 'ORIENTATION',
                      'NON_DISCRETIONARY_CATEGORIES',
@@ -144,9 +144,9 @@ def validate_string(string, expression):
             False
             >>> validate_string('     ', VALID_PARAM_NAME)
             False
-            >>> validate_string(r'\home\path\\file.txt  ', VALID_PARAM_VALUE)
+            >>> validate_string(r'\\home\\path\\file.txt  ', VALID_PARAM_VALUE)
             True
-            >>> validate_string(r' \home\path\\file.txt  ', VALID_PARAM_VALUE)
+            >>> validate_string(r' \\home\\path\\file.txt  ', VALID_PARAM_VALUE)
             False
 
         Args:
