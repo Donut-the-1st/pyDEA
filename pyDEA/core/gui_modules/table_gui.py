@@ -313,7 +313,7 @@ class TableFrameWithInputOutputBox(TableFrame):
         self.col_checkboxes = []
         self.current_categories = current_categories
         self.str_var_for_input_output_boxes = str_var_for_input_output_boxes
-        self.str_var_for_input_output_boxes.trace('w', self.on_load_categories)
+        self.str_var_for_input_output_boxes.trace_add('write', self.on_load_categories)
         super().__init__(parent, data, nb_rows, nb_cols)
 
     def create_widgets(self):
@@ -1157,7 +1157,7 @@ class SelfValidatingEntry(Entry):
     '''
     def __init__(self, parent, data, all_cells, *args, **kw):
         self.text_value = StringVar(master=parent)
-        self.text_value.trace("w", self.on_text_changed)
+        self.text_value.trace_add("write", self.on_text_changed)
         super().__init__(parent, *args, **kw)
         self.config(textvariable=self.text_value)
         self.observers = []

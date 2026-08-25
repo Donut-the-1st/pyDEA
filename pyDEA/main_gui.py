@@ -47,7 +47,7 @@ class MainFrame(Frame):
         self.increment = 0
         self.weights_status_lbl = None
         self.weights_status_str = StringVar()
-        self.weights_status_str.trace('w', self.on_weights_status_change)
+        self.weights_status_str.trace_add('write', self.on_weights_status_change)
         self.current_categories = []
         self.create_widgets()
 

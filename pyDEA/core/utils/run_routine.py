@@ -332,7 +332,7 @@ class RunMethodGUI(RunMethodBase):
         ''' See base class.
         '''
         current_dmu = StringVar()
-        current_dmu.trace('w', self.frame.on_dmu_change)
+        current_dmu.trace_add('write', self.frame.on_dmu_change)
         self.current_dmu = current_dmu
         self.increment = 100 / (len(coefficients) * nb_models)
         self.frame.progress_bar['value'] = 0

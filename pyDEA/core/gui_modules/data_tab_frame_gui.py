@@ -85,14 +85,14 @@ class DataTabFrame(Frame):
                  str_var_for_input_output_boxes, *args, **kw):
         super().__init__(parent, *args, **kw)
         self.parent = parent
-        data_from_params_file.trace("w", self.on_params_file_change)
+        data_from_params_file.trace_add("write", self.on_params_file_change)
         self.data_from_params_file = data_from_params_file
         self.panel = None
         self.table = None
         self.params_frame = params_frame
         self.data = []
         self.if_text_modified_str = StringVar()
-        self.if_text_modified_str.trace('w', self.on_data_modify)
+        self.if_text_modified_str.trace_add('write', self.on_data_modify)
         self.sheet_name = ''
         self.navigation_frame = None
         self.table_modifier_frame = None

@@ -83,10 +83,10 @@ class OptionsFrame(LabelFrame):
         self.output_categories_frame = output_categories_frame
         self.categorical_box = None
         self.combobox_text_var = StringVar()
-        self.combobox_text_var.trace('w', self.on_categorical_box_change)
+        self.combobox_text_var.trace_add('write', self.on_categorical_box_change)
         self.options = dict()
         self.multi_tol_strvar = StringVar()
-        self.multi_tol_strvar.trace('w', self.on_multi_tol_change)
+        self.multi_tol_strvar.trace_add('write', self.on_multi_tol_change)
         self.max_slack_box = None
         self.create_widgets()
 
@@ -189,8 +189,8 @@ class OptionsFrame(LabelFrame):
         assert len(text) == 2
         v = IntVar()
         self.options[name] = v
-        self.options[name].trace(
-            'w', (lambda *args: self.radio_btn_change(name)))
+        self.options[name].trace_add(
+            'write', (lambda *args: self.radio_btn_change(name)))
         frame_with_radio_btns = Frame(parent)
         first_option = Radiobutton(frame_with_radio_btns,
                                    text=text[0], variable=v, value=1)
