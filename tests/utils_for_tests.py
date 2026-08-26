@@ -1,10 +1,10 @@
 from pulp import LpStatusOptimal
 import pytest
 
-from pyDEA.core.data_processing.read_data_from_xls import read_data
-from pyDEA.core.data_processing.read_data_from_xls import construct_input_data_instance
-from pyDEA.core.data_processing.read_data_from_xls import validate_data
-from pyDEA.core.data_processing.read_data_from_xls import convert_to_dictionary
+from pyDEA.core.data_processing.read_data import read_data
+from pyDEA.core.data_processing.read_data import construct_input_data_instance
+from pyDEA.core.data_processing.read_data import validate_data
+from pyDEA.core.data_processing.read_data import convert_to_dictionary
 from pyDEA.core.utils.dea_utils import clean_up_pickled_files
 
 

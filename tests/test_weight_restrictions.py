@@ -2,9 +2,9 @@ import pytest
 from openpyxl import Workbook
 import datetime
 
-from pyDEA.core.data_processing.read_data_from_xls import read_data
-from pyDEA.core.data_processing.read_data_from_xls import construct_input_data_instance
-from pyDEA.core.data_processing.read_data_from_xls import validate_data, convert_to_dictionary
+from pyDEA.core.data_processing.read_data import read_data
+from pyDEA.core.data_processing.read_data import construct_input_data_instance
+from pyDEA.core.data_processing.read_data import validate_data, convert_to_dictionary
 from pyDEA.core.models.multiplier_model_base import MultiplierModelBase
 from pyDEA.core.models.multiplier_model import MultiplierInputOrientedModel
 from pyDEA.core.models.multiplier_model_decorators import MultiplierModelWithAbsoluteWeightRestrictions
@@ -14,7 +14,7 @@ from pyDEA.core.models.envelopment_model_decorators import EnvelopmentModelWithA
 from pyDEA.core.models.envelopment_model_decorators import EnvelopmentModelWithVirtualWeightRestrictions
 from pyDEA.core.models.envelopment_model_decorators import EnvelopmentModelWithPriceRatioConstraints
 from pyDEA.core.models.bound_generators import generate_upper_bound_for_efficiency_score
-from pyDEA.core.data_processing.write_data_to_xls import XLSWriter
+from pyDEA.core.data_processing.write_data import FileWriter
 from pyDEA.core.data_processing.parameters import Parameters
 from pyDEA.core.utils.dea_utils import clean_up_pickled_files
 from pyDEA.core.data_processing.parameters import parse_parameters_from_file
@@ -52,7 +52,7 @@ def test_abs_weight_restrictions_multiplier_model(data):
         model_solution, bounds)
 
     work_book = Workbook()
-    writer = XLSWriter(Parameters(), work_book, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
     work_book.save('tests/test_abs_weights_multi_output.xls')
@@ -68,7 +68,7 @@ def test_abs_weight_restrictions_multiplier_model(data):
         model_solution, bounds)
 
     work_book2 = Workbook()
-    writer = XLSWriter(Parameters(), work_book2, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book2, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
     work_book2.save('tests/test_abs_weights_upper_bound_multi_output.xls')
@@ -88,7 +88,7 @@ def test_virtual_weight_restrictions_multiplier_model(data):
         model_solution, bounds)
 
     work_book = Workbook()
-    writer = XLSWriter(Parameters(), work_book, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
     work_book.save('tests/test_virtual_weights_multi_output.xls')
@@ -113,7 +113,7 @@ def test_abs_and_virtual_restrictions_multiplier_model(data):
         model_solution, bounds)
 
     work_book = Workbook()
-    writer = XLSWriter(Parameters(), work_book, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
     work_book.save('tests/test_virtual_and_abs_weights_multi_output.xls')
@@ -133,7 +133,7 @@ def test_price_ratio_multiplier_model(data):
         model_solution, bounds)
 
     work_book = Workbook()
-    writer = XLSWriter(Parameters(), work_book, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
     work_book.save('tests/test_price_ratio_multi_output.xls')
@@ -163,7 +163,7 @@ def test_all_constraints_multiplier_model(data):
         model_solution, ratio_bounds)
 
     work_book = Workbook()
-    writer = XLSWriter(Parameters(), work_book, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
     work_book.save('tests/test_all_constraints_multi_output.xls')
@@ -184,7 +184,7 @@ def test_abs_restrictions_env_model(data):
         model_solution, bounds)
 
     work_book = Workbook()
-    writer = XLSWriter(Parameters(), work_book, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
     work_book.save('tests/test_abs_constraints_env_output.xls')
@@ -209,7 +209,7 @@ def test_abs_restrictions_env_model_output(data):
         model_solution, bounds)
 
     work_book = Workbook()
-    writer = XLSWriter(Parameters(), work_book, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
     work_book.save('tests/test_abs_constraints_env_outoriented_output.xls')
@@ -230,7 +230,7 @@ def test_virual_restrictions_env_model(data):
         model_solution, bounds)
 
     work_book = Workbook()
-    writer = XLSWriter(Parameters(), work_book, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
     work_book.save('tests/test_virtual_constraints_env_output.xls')
@@ -251,7 +251,7 @@ def test_price_ratio_restrictions_env_model(data):
         model_solution, bounds)
 
     work_book = Workbook()
-    writer = XLSWriter(Parameters(), work_book, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
     work_book.save('tests/test_price_ratio_env_output.xls')

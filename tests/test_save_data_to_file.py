@@ -2,7 +2,7 @@ import os
 import pytest
 
 from pyDEA.core.data_processing.save_data_to_file import save_data_to_xls
-from pyDEA.core.data_processing.read_data_from_xls import read_data
+from pyDEA.core.data_processing.read_data import read_data
 
 
 @pytest.fixture

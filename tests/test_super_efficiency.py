@@ -8,7 +8,7 @@ from pyDEA.core.models.envelopment_model import EnvelopmentModelInputOriented
 from pyDEA.core.models.envelopment_model_decorators import DefaultConstraintCreator
 from pyDEA.core.models.envelopment_model_decorators import EnvelopmentModelVRSDecorator
 from pyDEA.core.models.bound_generators import generate_supper_efficiency_upper_bound
-from pyDEA.core.data_processing.write_data_to_xls import XLSWriter
+from pyDEA.core.data_processing.write_data import FileWriter
 from pyDEA.core.data_processing.parameters import Parameters
 
 import tests.utils_for_tests as utils_for_tests
@@ -41,7 +41,7 @@ def test_super_efficiency_medium(DEA_example2_data):
          0.6267333816, 1.088235274],
         solution, data, 1e-6)
     work_book = Workbook()
-    writer = XLSWriter(Parameters(), work_book, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(solution)
     work_book.save('tests/test_super_efficiency_output.xls')
@@ -64,7 +64,7 @@ def test_super_efficiency_with_VRS(DEA_example2_data):
     solution = super_efficiency_model.run()
     end_time = datetime.datetime.now()
     work_book = Workbook()
-    writer = XLSWriter(Parameters(), work_book, datetime.datetime.today(),
+    writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(solution)
     work_book.save('tests/test_super_efficiency_with_VRS.xls')
