@@ -26,7 +26,7 @@ VALID_PARAM_NAME = r'\w[\w ]*'
 # all other characters are allowed,
 # since file paths must be treated
 # VALID_PARAM_VALUE = r'\S.*|(?imsux)' #previously r'\S.*|(?iLmsux)' causing error "cannot use LOCALE flag with a str pattern" with Python>=3.6
-VALID_PARAM_VALUE = r'(?imsux)\S.*|' # previously r'\S.*|(?imsux)' which is also not valid due to having the inline modifier at the end of the expression
+VALID_PARAM_VALUE = r'(?imsux:\S.*|)' # previously r'\S.*|(?imsux)' which is also not valid due to having the inline modifier at the end of the expression
 VALID_PARAM_NAMES = ['DATA_FILE', 'INPUT_CATEGORIES', 'OUTPUT_CATEGORIES',
                      'DEA_FORM', 'RETURN_TO_SCALE', 'ORIENTATION',
                      'NON_DISCRETIONARY_CATEGORIES',
