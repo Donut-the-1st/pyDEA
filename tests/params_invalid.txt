@@ -1,4 +1,4 @@
-<DATA_FILE> {Data/DEA_example2_data_haha.xls}
+<DATA_FILE> {Data/DEA_example2_data_haha}
 <INPUT_CATEGORIES> {I1; I2; I3}
 <OUTPUT_CATEGORIES> {O1; O2}
 <DEA_FORM> {multi}

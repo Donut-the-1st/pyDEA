@@ -58,7 +58,7 @@ File ``DEA_example_data_params.txt``:
 ::
 
     <ABS_WEIGHT_RESTRICTIONS> {}
-    <DATA_FILE> {Data\DEA_example_data.xls}
+    <DATA_FILE> {Data\DEA_example_data.xlsx}
     <USE_SUPER_EFFICIENCY> {}
     <OUTPUT_CATEGORIES> {O1;O2}
     <NON_DISCRETIONARY_CATEGORIES> {ND1}

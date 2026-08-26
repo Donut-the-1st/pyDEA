@@ -61,7 +61,7 @@ def test_peel_the_onion_CRS_multi_output_oriented(DEA_example2_data):
                        (end_time - start_time).total_seconds(),
                        ranks=ranks_as_list)
     writer.write_data(solution)
-    work_book.save('tests/test_peel_the_onion.xls')
+    work_book.save('tests/test_peel_the_onion')
 
 
 def test_peel_the_onion_VRS_multi(categorical_data):

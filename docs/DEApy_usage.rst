@@ -112,7 +112,7 @@ Using *pyDEA*
 Load Input Data File
 ~~~~~~~~~~~~~~~~~~~~
 
-To select the Excel (.xls or .xlsx) or CSV file that contains your input
+To select the Excel (.xlsx) or CSV file that contains your input
 data, click *Load*. This will open a window to select the file and click
 *Open*, see Figure :ref:`fig-selection-window`. The default directory shown in the
 window is folder
@@ -129,7 +129,7 @@ Browse to the location of your data file and select it.
    
    *pyDEA* file selection window
 
-Note that a .xls/.xlsx or .csv file must be selected, data cannot be
+Note that a .xlsx or .csv file must be selected, data cannot be
 read from other file formats. Also, data has to be in a very specific
 format, see Section :ref:`section-input-data` for details.
 
@@ -293,7 +293,7 @@ Saving Results
 *pyDEA* gives you the option of saving results to Excel (xls/xlsx) and
 CSV formats. Just click on the *Save solution* button. Select the
 required format (Excel or CSV) and enter a suitable output filename e.g.
-inputFilename\_results.xls. The complete set of results of the DEA run
+inputFilename\_results.xlsx. The complete set of results of the DEA run
 will be saved. The \* in the *Solution\** tab will disappear upon
 successful save.
 

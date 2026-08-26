@@ -48,7 +48,7 @@ def test_run_with_categorical_dmus(categorical_from_book):
                        (end_time - start_time).total_seconds(),
                        categorical='Category')
     writer.write_data(solution)
-    work_book.save('tests/test_categorical_output.xls')
+    work_book.save('tests/test_categorical_output')
 
 
 def test_run_with_categorical_dmus_invalid_data(categorical_from_book):

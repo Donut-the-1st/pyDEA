@@ -7,7 +7,7 @@ from pyDEA.core.data_processing.read_data import read_data
 
 @pytest.fixture
 def raw_data(request):
-    return read_data('tests/DEA_example2_data.xls')
+    return read_data('tests/DEA_example2_data')
 
 
 def compare_files(raw_data, data_file, sheet_name, categories):

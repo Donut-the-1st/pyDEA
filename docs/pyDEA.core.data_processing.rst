@@ -20,10 +20,10 @@ pyDEA.core.data_processing.parameters module
     :undoc-members:
     :show-inheritance:
 
-pyDEA.core.data_processing.read_data_from_xls module
+pyDEA.core.data_processing.read_data module
 ----------------------------------------------------
 
-.. automodule:: pyDEA.core.data_processing.read_data_from_xls
+.. automodule:: pyDEA.core.data_processing.read_data
     :members:
     :undoc-members:
     :show-inheritance:
@@ -60,10 +60,10 @@ pyDEA.core.data_processing.targets_and_slacks module
     :undoc-members:
     :show-inheritance:
 
-pyDEA.core.data_processing.write_data_to_xls module
+pyDEA.core.data_processing.write_data module
 ---------------------------------------------------
 
-.. automodule:: pyDEA.core.data_processing.write_data_to_xls
+.. automodule:: pyDEA.core.data_processing.write_data
     :members:
     :undoc-members:
     :show-inheritance:

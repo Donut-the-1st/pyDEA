@@ -77,7 +77,7 @@ class DataTabFrameMock(DataTabFrame):
                          ParamsFrameMock(parent),
                          ['', '', ''], StringVar(master=parent),
                          StringVar(master=parent))
-        self.file_to_save = 'tests/test_file_save_data_frame_tab.xls'
+        self.file_to_save = 'tests/test_file_save_data_frame_tab'
         self.file_to_load = ''
         self.my_sheet_name = sheet_name
 
@@ -140,7 +140,7 @@ def _check_clear_all(data_tab):
 
 
 def test_clear_all(data_tab):
-    data_tab.show_loaded_data('tests/categorical_test.xls')
+    data_tab.show_loaded_data('tests/categorical_test')
     data_tab.clear_all()
     _check_clear_all(data_tab)
 
@@ -181,13 +181,13 @@ def test_save_data(data_tab):
 
 
 def test_on_params_file_change(data_tab):
-    data_tab.show_loaded_data('tests/categorical_test.xls')
+    data_tab.show_loaded_data('tests/categorical_test')
     data_tab.data_from_params_file.set('')
     assert data_tab.panel.cget(
-        'text') == TEXT_FOR_PANEL + 'tests/categorical_test.xls'
-    data_tab.data_from_params_file.set('tests/DEA_example2_data.xls')
+        'text') == TEXT_FOR_PANEL + 'tests/categorical_test'
+    data_tab.data_from_params_file.set('tests/DEA_example2_data')
     assert data_tab.panel.cget('text') == TEXT_FOR_PANEL + \
-        'tests/DEA_example2_data.xls'
+        'tests/DEA_example2_data'
 
 
 def test_show_data(data_tab):
@@ -237,7 +237,7 @@ def _check_data_and_table(tab, categories, coefficients):
 
 
 def test_show_loaded_data(data_tab):
-    file_name = 'tests/dataToTestDataLoad.xls'
+    file_name = 'tests/dataToTestDataLoad'
     data_tab.file_to_load = file_name
     data_tab.load_file()
     categories = ['i1', 'i2', 'o1', 'o2']
@@ -254,7 +254,7 @@ def test_show_loaded_data(data_tab):
 def test_show_loaded_data_second_sheet():
     parent = Tk()
     tab = DataTabFrameMock(parent, 'Sheet2')
-    tab.show_loaded_data('tests/dataToTestDataLoad.xls')
+    tab.show_loaded_data('tests/dataToTestDataLoad')
     categories = ['inp1',  'inp2',  'out']
     coefficients = [['a',   10.0,  10.0,  10.0],
                     ['b',   20.0,  20.0,  20.0],
@@ -267,7 +267,7 @@ def test_show_loaded_data_second_sheet():
 
 
 def test_show_loaded_data_one_page(data_tab):
-    data_tab.show_loaded_data('tests/dataToTestDataLoadOneSheet.xls')
+    data_tab.show_loaded_data('tests/dataToTestDataLoadOneSheet')
     categories = ['i1', 'i2', 'o1', 'o2']
     coefficients = [[1.0,   1.0,   2.0,   3.0,   4.0],
                     [2.0,   5.0,   6.0,   7.0,   8.0],

@@ -6,7 +6,7 @@ Output Data Format
 Output Settings
 ---------------
 
-You have the option to save the results into Excel (.xls/.xlsx) or CSV
+You have the option to save the results into Excel (.xlsx) or CSV
 files. The Excel results file contains the following worksheets with
 information of all runs (if multiple runs were selected using *Both* for
 RTS or orientation whereas for the CSV results, the following items are

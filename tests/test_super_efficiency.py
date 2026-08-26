@@ -44,7 +44,7 @@ def test_super_efficiency_medium(DEA_example2_data):
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(solution)
-    work_book.save('tests/test_super_efficiency_output.xls')
+    work_book.save('tests/test_super_efficiency_output')
 
 
 def test_super_efficiency_with_VRS(DEA_example2_data):
@@ -67,7 +67,7 @@ def test_super_efficiency_with_VRS(DEA_example2_data):
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(solution)
-    work_book.save('tests/test_super_efficiency_with_VRS.xls')
+    work_book.save('tests/test_super_efficiency_with_VRS')
 
 
 def test_superefficiency_and_peel_the_onion(categorical_data):

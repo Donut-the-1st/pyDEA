@@ -55,7 +55,7 @@ def test_abs_weight_restrictions_multiplier_model(data):
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
-    work_book.save('tests/test_abs_weights_multi_output.xls')
+    work_book.save('tests/test_abs_weights_multi_output')
 
     bounds = {'I2': (None, 0.05)}
     model = MultiplierModelWithAbsoluteWeightRestrictions(base_model, bounds)
@@ -71,7 +71,7 @@ def test_abs_weight_restrictions_multiplier_model(data):
     writer = FileWriter(Parameters(), work_book2, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
-    work_book2.save('tests/test_abs_weights_upper_bound_multi_output.xls')
+    work_book2.save('tests/test_abs_weights_upper_bound_multi_output')
 
 
 def test_virtual_weight_restrictions_multiplier_model(data):
@@ -91,7 +91,7 @@ def test_virtual_weight_restrictions_multiplier_model(data):
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
-    work_book.save('tests/test_virtual_weights_multi_output.xls')
+    work_book.save('tests/test_virtual_weights_multi_output')
 
 
 def test_abs_and_virtual_restrictions_multiplier_model(data):
@@ -116,7 +116,7 @@ def test_abs_and_virtual_restrictions_multiplier_model(data):
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
-    work_book.save('tests/test_virtual_and_abs_weights_multi_output.xls')
+    work_book.save('tests/test_virtual_and_abs_weights_multi_output')
 
 
 def test_price_ratio_multiplier_model(data):
@@ -136,7 +136,7 @@ def test_price_ratio_multiplier_model(data):
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
-    work_book.save('tests/test_price_ratio_multi_output.xls')
+    work_book.save('tests/test_price_ratio_multi_output')
 
 
 def test_all_constraints_multiplier_model(data):
@@ -166,7 +166,7 @@ def test_all_constraints_multiplier_model(data):
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
-    work_book.save('tests/test_all_constraints_multi_output.xls')
+    work_book.save('tests/test_all_constraints_multi_output')
 
 
 def test_abs_restrictions_env_model(data):
@@ -187,7 +187,7 @@ def test_abs_restrictions_env_model(data):
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
-    work_book.save('tests/test_abs_constraints_env_output.xls')
+    work_book.save('tests/test_abs_constraints_env_output')
 
 
 def test_abs_restrictions_env_model_output(data):
@@ -212,7 +212,7 @@ def test_abs_restrictions_env_model_output(data):
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
-    work_book.save('tests/test_abs_constraints_env_outoriented_output.xls')
+    work_book.save('tests/test_abs_constraints_env_outoriented_output')
 
 
 def test_virual_restrictions_env_model(data):
@@ -233,7 +233,7 @@ def test_virual_restrictions_env_model(data):
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
-    work_book.save('tests/test_virtual_constraints_env_output.xls')
+    work_book.save('tests/test_virtual_constraints_env_output')
 
 
 def test_price_ratio_restrictions_env_model(data):
@@ -254,12 +254,12 @@ def test_price_ratio_restrictions_env_model(data):
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
-    work_book.save('tests/test_price_ratio_env_output.xls')
+    work_book.save('tests/test_price_ratio_env_output')
 
 
 def test_price_ratio_restrictions_medium_env_model():
     categories, data, dmu_name, sheet_name = read_data(
-        'tests/dataFromDEAbook_page181.xls')
+        'tests/dataFromDEAbook_page181')
     coefficients, has_same_dmus = convert_to_dictionary(data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True

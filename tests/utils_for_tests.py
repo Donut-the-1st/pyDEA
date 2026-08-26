@@ -15,7 +15,7 @@ WEIGHT_RESTRICTION_TOLERANCE = 1e-7
 @pytest.fixture
 def DEA_example2_data(request):
     categories, xls_data, dmu_name, sheet_name = read_data(
-        'tests/DEA_example2_data.xls')
+        'tests/DEA_example2_data.xlsx')
     coefficients, has_same_dmus = convert_to_dictionary(xls_data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True
@@ -26,7 +26,7 @@ def DEA_example2_data(request):
 @pytest.fixture
 def categorical_from_book(request):
     categories, xls_data, dmu_name, sheet_name = read_data(
-        'tests/categorical_test_from_book.xls')
+        'tests/categorical_test_from_book.xlsx')
     coefficients, has_same_dmus = convert_to_dictionary(xls_data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True
@@ -43,7 +43,7 @@ def categorical_from_book(request):
 @pytest.fixture
 def DEA_example_data(request):
     categories, xls_data, dmu_name, sheet_name = read_data(
-        'tests/DEA_example_data.xls')
+        'tests/DEA_example_data.xlsx')
     coefficients, has_same_dmus = convert_to_dictionary(xls_data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True
@@ -54,7 +54,7 @@ def DEA_example_data(request):
 @pytest.fixture
 def categorical_data(request):
     categories, xls_data, dmu_name, sheet_name = read_data(
-        'tests/categorical_test.xls')
+        'tests/categorical_test.xlsx')
     coefficients, has_same_dmus = convert_to_dictionary(xls_data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True

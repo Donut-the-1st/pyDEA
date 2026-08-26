@@ -133,7 +133,7 @@ def test_CRS_multi_output_oriented_with_non_discretionary_vars(
 
 def test_with_zero_data():
     categories, xls_data, dmu_name, sheet_name = read_data(
-        'tests/with_zeros.xls')
+        'tests/with_zeros.xlsx')
     coefficients, has_same_dmus = convert_to_dictionary(xls_data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True
