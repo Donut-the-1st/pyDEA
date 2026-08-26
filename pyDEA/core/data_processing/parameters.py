@@ -76,7 +76,7 @@ def parse_parameters_from_file(filename):
     # does not exists, 'rU' - r - read mode,
     # U - Universal for encoding
     nb_parsed_params = 0
-    with open(filename, 'rU') as file_with_params:
+    with open(filename, 'r') as file_with_params:
         for line in file_with_params:
             line = extract_comment(line)
             matched_params = re.findall(pattern, line)
