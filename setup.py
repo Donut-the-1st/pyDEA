@@ -1,6 +1,5 @@
 import os
 from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
 
 
 # Utility function to read the README file.
@@ -9,21 +8,6 @@ from setuptools.command.test import test as TestCommand
 # string in below ...
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
-
-class PyTest(TestCommand):
-    user_options = [('pytest-args=', 'a', "Arguments to pass to pytest")]
-
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = []
-
-    def run_tests(self):
-        # import here, cause outside the eggs aren't loaded
-        import pytest
-        errno = pytest.main(self.pytest_args)
-        sys.exit(errno)
-
 
 setup(
     name="pyDEA",
@@ -56,7 +40,8 @@ setup(
         ],
     },
     include_package_data=True,
-    tests_require=['pytest'],
-    cmdclass={'test': PyTest},
+    extras_require = {
+        'test': ['pytest','xlrd'],
+    },
     test_suite='tests',
 )
