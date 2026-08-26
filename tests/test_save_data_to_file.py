@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from pyDEA.core.data_processing.save_data_to_file import save_data_to_xls
+from pyDEA.core.data_processing.save_data_to_file import save_data_to_xlsx
 from pyDEA.core.data_processing.read_data import read_data
 
 
@@ -31,8 +31,8 @@ def get_categories(raw_data):
 
 def test_save_data_to_new_file(raw_data):
     categories = get_categories(raw_data)
-    data_file = 'tests/test_data_save.xls'
-    save_data_to_xls(data_file, categories, raw_data[1])
+    data_file = 'tests/test_data_save.xlsx'
+    save_data_to_xlsx(data_file, categories, raw_data[1])
     assert os.path.isfile(data_file)
     compare_files(raw_data, data_file, 'Data', categories)
     os.remove(data_file)
@@ -40,23 +40,23 @@ def test_save_data_to_new_file(raw_data):
 
 def test_save_data_to_existing_file(raw_data):
     categories = get_categories(raw_data)
-    data_file = 'tests/test_file_for_data_save.xls'
+    data_file = 'tests/test_file_for_data_save.xlsx'
     sheet_name = 'SheetWithData'
-    save_data_to_xls(data_file, categories, raw_data[1], sheet_name)
+    save_data_to_xlsx(data_file, categories, raw_data[1], sheet_name)
     assert os.path.isfile(data_file)
     compare_files(raw_data, data_file, sheet_name, categories)
 
 
 def test_save_data_to_file_wrong_sheet_name():
     with pytest.raises(ValueError) as excinfo:
-        save_data_to_xls('test.xls', [], [], '')
+        save_data_to_xlsx('test.xlsx', [], [], '')
     assert str(excinfo.value) == 'Sheet name is not specified'
 
 
 def test_save_data_to_existing_file_new_sheet_name(raw_data):
     categories = get_categories(raw_data)
-    data_file = 'tests/test_file_for_data_save.xls'
+    data_file = 'tests/test_file_for_data_save.xlsx'
     sheet_name = 'NewSheetName'
-    save_data_to_xls(data_file, categories, raw_data[1], sheet_name)
+    save_data_to_xlsx(data_file, categories, raw_data[1], sheet_name)
     assert os.path.isfile(data_file)
     compare_files(raw_data, data_file, sheet_name, categories)

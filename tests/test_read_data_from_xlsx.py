@@ -1,40 +1,40 @@
-import xlrd
+from openpyxl.cell import Cell
 
-from pyDEA.core.data_processing.read_data_from_xls import read_data, XLSXReader
-from pyDEA.core.data_processing.read_data_from_xls import has_non_empty_cells
-from pyDEA.core.data_processing.read_data_from_xls import extract_categories
-from pyDEA.core.data_processing.read_data_from_xls import extract_coefficients
-from pyDEA.core.data_processing.read_data_from_xls import validate_data, convert_to_dictionary
-from pyDEA.core.data_processing.read_data_from_xls import construct_input_data_instance
+from pyDEA.core.data_processing.read_data import read_data, XLSXReader
+from pyDEA.core.data_processing.read_data import has_non_empty_cells
+from pyDEA.core.data_processing.read_data import extract_categories
+from pyDEA.core.data_processing.read_data import extract_coefficients
+from pyDEA.core.data_processing.read_data import validate_data, convert_to_dictionary
+from pyDEA.core.data_processing.read_data import construct_input_data_instance
 
 
 def test_has_non_empty_cells():
     row = []
     reader = XLSXReader()
     assert has_non_empty_cells(reader, []) is False
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_BLANK, ''))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=''))
     assert has_non_empty_cells(reader, row) is False
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_TEXT, u'x1'))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_TEXT, u'input with space'))
+    row.append(Cell(None, value='x1'))
+    row.append(Cell(None, value='input with space'))
     assert has_non_empty_cells(reader, row) is True
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 10))
+    row.append(Cell(None, value=10))
     assert has_non_empty_cells(reader, row) is True
     row = []
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 10))
+    row.append(Cell(None, value=10))
     assert has_non_empty_cells(reader, row) is True
 
 
 def test_extract_categories():
     row = []
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_TEXT, u'x1'))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_TEXT, u'x2'))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_TEXT, u'input with space'))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_TEXT, u'output starts with space'))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value='x1'))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value='x2'))
+    row.append(Cell(None, value='input with space'))
+    row.append(Cell(None, value='output starts with space'))
     reader = XLSXReader()
     categories, indexes = extract_categories(reader, row)
     assert categories == ['x1', 'x2',
@@ -43,15 +43,15 @@ def test_extract_categories():
 
 def test_extract_numeric_categories():
     row = []
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 5))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 15))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, -100))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_TEXT, u'x1'))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=5))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=15))
+    row.append(Cell(None, value=-100))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value='x1'))
+    row.append(Cell(None, value=None))
     reader = XLSXReader()
     categories, indexes = extract_categories(reader, row)
     assert categories == [5, 15, -100, 'x1']
@@ -59,19 +59,19 @@ def test_extract_numeric_categories():
 
 def test_extract_coefficients():
     row = []
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_TEXT, u'dmu1'))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 10))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 25))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 45))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 0))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 7.9))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value='dmu1'))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=10))
+    row.append(Cell(None, value=25))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=45))
+    row.append(Cell(None, value=0))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=7.9))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=None))
     reader = XLSXReader()
     (dmu, coefficients, dmu_name) = extract_coefficients(
         reader, row, [4, 5, 7, 8, 10])
@@ -81,17 +81,17 @@ def test_extract_coefficients():
 
 def test_extract_coefficients_with_numeric_dmu():
     row = []
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 0))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 10))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 25))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 45))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 0))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_NUMBER, 7.9))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_TEXT, u' aha '))
-    row.append(xlrd.sheet.Cell(xlrd.XL_CELL_EMPTY, ''))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=0))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=10))
+    row.append(Cell(None, value=25))
+    row.append(Cell(None, value=45))
+    row.append(Cell(None, value=0))
+    row.append(Cell(None, value=7.9))
+    row.append(Cell(None, value=None))
+    row.append(Cell(None, value=' aha '))
+    row.append(Cell(None, value=None))
     reader = XLSXReader()
     (dmu, coefficients, dmu_name) = extract_coefficients(
         reader, row, [3, 4, 5, 6, 7, 8, 9])
@@ -145,15 +145,15 @@ def helper_func(filename):
                        categories, [45, 9, 10, 7.55])
 
 
-def test_read_data_from_xls():
-    helper_func('tests/dataForTestingReadXLS.xls')
+def test_read_data_from_xlsx():
+    helper_func('tests/dataForTestingReadXLSX.xlsx')
     helper_func('tests/dataForTestingReadXLStheSame.xlsx')
 
 
-def test_read_data_from_xls_larger_example():
+def test_read_data_from_xlsx_larger_example():
 
     categories, data, dmu_name, sheet_name = read_data(
-        'tests/DEA_example2_data.xls')
+        'tests/DEA_example2_data.xlsx')
     coefficients, has_same_dmus = convert_to_dictionary(data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True
@@ -183,10 +183,10 @@ def test_read_data_from_xls_larger_example():
     check_coefficients(input_data, 'K', categories, [5,  17,  3,   12,  37])
 
 
-def test_read_data_from_xls_numeric_dmus():
-    categories, xls_data, dmu_name, sheet_name = read_data(
-        'tests/dataForTestingReadXLS_withNumericDMU.xls')
-    coefficients, has_same_dmus = convert_to_dictionary(xls_data)
+def test_read_data_from_xlsx_numeric_dmus():
+    categories, xlsx_data, dmu_name, sheet_name = read_data(
+        'tests/dataForTestingReadXLSX_withNumericDMU.xlsx')
+    coefficients, has_same_dmus = convert_to_dictionary(xlsx_data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True
     input_data = construct_input_data_instance(categories, coefficients)
@@ -207,12 +207,12 @@ def test_read_data_from_xls_numeric_dmus():
 
 
 def test_order_of_dmus():
-    categories, xls_data, dmu_name, sheet_name = read_data(
-        'tests/categorical_test_from_book.xls')
-    coefficients, has_same_dmus = convert_to_dictionary(xls_data)
+    categories, xlsx_data, dmu_name, sheet_name = read_data(
+        'tests/categorical_test_from_book.xlsx')
+    coefficients, has_same_dmus = convert_to_dictionary(xlsx_data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True
-    coefficients, has_same_dmus = convert_to_dictionary(xls_data)
+    coefficients, has_same_dmus = convert_to_dictionary(xlsx_data)
     assert has_same_dmus is False
     data = construct_input_data_instance(categories, coefficients)
     dmus = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9',
