@@ -79,7 +79,7 @@ def save_data_to_xlsx(data_file, categories, data, sheet_name='Data'):
 
     # save categories
     for count, category in enumerate(categories):
-        work_sheet.write(0, count, category.strip())
+        work_sheet.cell(row=0 + 1, column=count + 1, value=category.strip())
 
     # save data
     row_index = 1
@@ -89,6 +89,6 @@ def save_data_to_xlsx(data_file, categories, data, sheet_name='Data'):
                 val = float(coeff)
             except ValueError:
                 val = coeff
-            work_sheet.write(row_index, col, val)
+            work_sheet.cell(row=row_index + 1, column=col + 1, value=val)
         row_index += 1
     work_book.save(data_file)
