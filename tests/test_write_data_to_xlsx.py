@@ -1,4 +1,5 @@
 from openpyxl import Workbook
+from pyDEA.core.data_processing.xlsx_workbook import XlsxWorkbook
 import datetime
 
 from pyDEA.core.data_processing.write_data import FileWriter
@@ -12,7 +13,7 @@ def test_write_data_xlsx(model):
     start_time = datetime.datetime.now()
     model_solution = model.run()
     end_time = datetime.datetime.now()
-    work_book = Workbook()
+    work_book = XlsxWorkbook()
     params = Parameters()
     writer = FileWriter(params, work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())

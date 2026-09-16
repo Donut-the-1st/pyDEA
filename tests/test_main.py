@@ -18,8 +18,8 @@ def test_main_correct_params():
 def test_main_output_format():
     filename = 'tests/params_new_format.txt'
     params = parse_parameters_from_file(filename)
-    auto_name = auto_name_if_needed(params, 'xls')
-    main(filename, output_format='xls')
+    auto_name = auto_name_if_needed(params, 'xlsx')
+    main(filename, output_format='xlsx')
     assert os.path.exists(auto_name) is True
     os.remove(auto_name)
 
@@ -27,9 +27,9 @@ def test_main_output_format():
 def test_main_output_dir():
     filename = 'tests/params_new_format.txt'
     params = parse_parameters_from_file(filename)
-    auto_name = auto_name_if_needed(params, 'xls')
+    auto_name = auto_name_if_needed(params, 'xlsx')
     output_dir = 'tests'
-    main(filename, output_format='xls', output_dir=output_dir)
+    main(filename, output_format='xlsx', output_dir=output_dir)
     output_name = os.path.join(output_dir, auto_name)
     assert os.path.exists(output_name) is True
     os.remove(output_name)
@@ -37,6 +37,7 @@ def test_main_output_dir():
 
 def test_main_different_sheet():
     filename = 'tests/params_to_test_main.txt'
+    # Hope changing output_format from '' to 'csv' doesn't matter
     main(filename, output_format='', sheet_name_usr='Sheet2')
     assert os.path.exists('haha') is True
     shutil.rmtree('haha')
