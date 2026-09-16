@@ -96,7 +96,7 @@ class MultiplierInputOrientedModel(InputOrientedModel):
                 lp_model (pulp.LpProblem): linear programming model.
         '''
         for category, var in input_variables.items():
-            lp_model.constraints['equality_constraint'][var] = input_data.coefficients[
+            lp_model.constraints['equality_constraint'].expr[var] = input_data.coefficients[
                 dmu_code, category]
 
 
@@ -189,5 +189,5 @@ class MultiplierOutputOrientedModel(OutputOrientedModel):
                 lp_model (pulp.LpProblem): linear programming model.
         '''
         for category, var in output_variables.items():
-            lp_model.constraints['equality_constraint'][var] = input_data.coefficients[
+            lp_model.constraints['equality_constraint'].expr[var] = input_data.coefficients[
                 dmu_code, category]

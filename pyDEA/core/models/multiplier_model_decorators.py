@@ -578,12 +578,12 @@ class MultiplierModelWithVirtualWeightRestrictions(
             if lower_bound:
                 variable, constraint_name = self.lb_weight_rest_variables[
                     category]
-                self.lp_model.constraints[constraint_name][variable] = multiplier
+                self.lp_model.constraints[constraint_name].expr[variable] = multiplier
 
             if upper_bound:
                 variable, constraint_name = self.ub_weight_rest_variables[
                     category]
-                self.lp_model.constraints[constraint_name][variable] = multiplier
+                self.lp_model.constraints[constraint_name].expr[variable] = multiplier
 
     def _store_vars_lb(self, category, constraint_name, variable):
         ''' See base class.

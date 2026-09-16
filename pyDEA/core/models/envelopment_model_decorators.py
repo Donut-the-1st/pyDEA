@@ -223,7 +223,7 @@ class EnvelopmentModelWithAbsoluteWeightRestrictions(EnvelopmentModelBase):
                     None, 0, pulp.LpContinuous)
                 self.new_vars_lb[category] = variable
                 name = self.model._constraints[category]
-                self.lp_model.constraints[name].addterm(variable, 1)
+                self.lp_model.constraints[name].expr.addterm(variable, 1)
                 self.lp_model.objective += (self._get_multiplier(
                                             dmu_code, category) *
                                             lower_bound * variable)
@@ -235,7 +235,7 @@ class EnvelopmentModelWithAbsoluteWeightRestrictions(EnvelopmentModelBase):
                     0, None, pulp.LpContinuous)
                 self.new_vars_ub[category] = variable
                 name = self.model._constraints[category]
-                self.lp_model.constraints[name].addterm(variable, 1)
+                self.lp_model.constraints[name].expr[variable] = 1
                 self.lp_model.objective += (self._get_multiplier(
                                             dmu_code, category) *
                                             upper_bound * variable)
@@ -370,9 +370,9 @@ class EnvelopmentModelWithPriceRatioConstraints(EnvelopmentModelBase):
                         category_in_nom, category_in_denom),
                     0, None, pulp.LpContinuous)
                 name = self.model._constraints[category_in_nom]
-                self.lp_model.constraints[name].addterm(variable, -1)
+                self.lp_model.constraints[name].expr.addterm(variable, -1)
                 name = self.model._constraints[category_in_denom]
-                self.lp_model.constraints[name].addterm(variable, lower_bound)
+                self.lp_model.constraints[name].expr.addterm(variable, lower_bound)
 
             if upper_bound:
                 variable = pulp.LpVariable(
@@ -380,9 +380,9 @@ class EnvelopmentModelWithPriceRatioConstraints(EnvelopmentModelBase):
                         category_in_nom, category_in_denom),
                     0, None, pulp.LpContinuous)
                 name = self.model._constraints[category_in_nom]
-                self.lp_model.constraints[name].addterm(variable, 1)
+                self.lp_model.constraints[name].expr.addterm(variable, 1)
                 name = self.model._constraints[category_in_denom]
-                self.lp_model.constraints[name].addterm(variable, -upper_bound)
+                self.lp_model.constraints[name].expr.addterm(variable, -upper_bound)
 
     def _create_solution(self):
         ''' See base class.

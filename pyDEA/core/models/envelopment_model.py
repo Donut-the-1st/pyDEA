@@ -111,7 +111,8 @@ class EnvelopmentModelInputOriented(InputOrientedModel):
                     model that is optimised in the objective function.
                 output_category (str): input category name.
         '''
-        constraint[obj_var] = current_input
+        # If I understood the original intent of this line of the code, this should be valid/equivilant
+        constraint.expr[obj_var] = current_input
 
 
 class EnvelopmentModelOutputOriented(OutputOrientedModel):
@@ -204,7 +205,7 @@ class EnvelopmentModelOutputOriented(OutputOrientedModel):
                     model that is optimised in the objective function.
                 output_category (str): output category name.
         '''
-        constraint[obj_var] = -current_output
+        constraint.expr[obj_var] = -current_output
 
     def update_input_category_coefficient(self, current_input, constraint,
                                           obj_var, input_category):
@@ -283,7 +284,7 @@ class EnvelopmentModelInputOrientedWithNonDiscVars(
         if input_category in self.non_disc_inputs:
             constraint.changeRHS(-current_input)
         else:
-            constraint[obj_var] = current_input
+            constraint.expr[obj_var] = current_input
 
 
 class EnvelopmentModelOutputOrientedWithNonDiscVars(
@@ -345,4 +346,4 @@ class EnvelopmentModelOutputOrientedWithNonDiscVars(
         if output_category in self.non_disc_outputs:
             constraint.changeRHS(current_output)
         else:
-            constraint[obj_var] = -current_output
+            constraint.expr[obj_var] = -current_output
