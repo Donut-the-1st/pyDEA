@@ -221,7 +221,7 @@ def test_auto_name_if_needed():
         params, 'csv') == 'dataFileForAutoName_result.csv'
     params.update_parameter('OUTPUT_FILE', 'auto')
     assert dea_utils.auto_name_if_needed(
-        params, 'xlsx') == 'dataFileForAutoName_result'
+        params, 'xlsx') == 'dataFileForAutoName_result.xlsx'
     with pytest.raises(ValueError) as excinfo:
         dea_utils.auto_name_if_needed(params, 'haha')
     assert str(excinfo.value) == 'haha is not supported output format'

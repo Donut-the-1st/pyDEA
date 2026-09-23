@@ -113,7 +113,7 @@ def test_add_row(table):
 
 
 def test_add_row_multiple_pages(data_tab):
-    data_tab.show_loaded_data('tests/dataTestRemoveRow')
+    data_tab.show_loaded_data('tests/dataTestRemoveRow.xlsx')
     assert data_tab.navigation_frame.text_var_nb_pages.get() == '2 pages'
     nb_rows = data_tab.table.nb_rows
     data_tab.table_modifier_frame.add_rows()
@@ -134,7 +134,7 @@ def test_add_row_multiple_pages(data_tab):
 
 
 def test_remove_row_multiple_pages_change_page_number(data_tab):
-    data_tab.show_loaded_data('tests/dataTestRemoveRow')
+    data_tab.show_loaded_data('tests/dataTestRemoveRow.xlsx')
     assert data_tab.navigation_frame.text_var_nb_pages.get() == '2 pages'
     nb_rows = data_tab.table.nb_rows
     data_tab.navigation_frame.show_next_page()
@@ -319,7 +319,7 @@ def test_remove_empty_rows(table):
 
 def test_remove_rows_multiple_pages(data_tab):
     data_tab.table.add_row()
-    data_tab.show_loaded_data('tests/1')
+    data_tab.show_loaded_data('tests/1.xlsx')
     assert data_tab.navigation_frame.text_var_nb_pages.get() == '3 pages'
     nb_rows = data_tab.table.nb_rows
     print('nb_rows', nb_rows)
@@ -328,7 +328,7 @@ def test_remove_rows_multiple_pages(data_tab):
 
 
 def test_remove_rows_next_page(data_tab):
-    data_tab.show_loaded_data('tests/1')
+    data_tab.show_loaded_data('tests/1.xlsx')
     assert data_tab.navigation_frame.text_var_nb_pages.get() == '3 pages'
     nb_rows = data_tab.table.nb_rows
     data_tab.navigation_frame.show_next_page()
@@ -341,7 +341,7 @@ def test_remove_rows_next_page(data_tab):
 
 
 def test_remove_row_two_pages_data(data_tab):
-    data_tab.show_loaded_data('tests/dataTestRemoveRow')
+    data_tab.show_loaded_data('tests/dataTestRemoveRow.xlsx')
     assert data_tab.navigation_frame.text_var_nb_pages.get() == '2 pages'
     nb_rows = data_tab.table.nb_rows
     print('nb_rows', nb_rows)

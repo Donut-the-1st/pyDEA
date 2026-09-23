@@ -63,7 +63,7 @@ def test_VRS_env_input_oriented_small(model, data):
 
 def test_VRS_env_input_oriented_non_disc_vars():
     categories, xls_data, dmu_name, sheet_name = read_data(
-        'tests/DEA_example_data')
+        'tests/DEA_example_data.xlsx')
     coefficients, has_same_dmus = convert_to_dictionary(xls_data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True
@@ -94,7 +94,7 @@ def test_VRS_env_input_oriented_non_disc_vars():
 
 def test_VRS_env_input_oriented_weakly_disposable_vars():
     categories, xls_data, dmu_name, sheet_name = read_data(
-        'tests/DEA_example2_data')
+        'tests/DEA_example2_data.csv')
     coefficients, has_same_dmus = convert_to_dictionary(xls_data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True

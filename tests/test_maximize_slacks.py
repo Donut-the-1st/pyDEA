@@ -1,4 +1,5 @@
 from openpyxl import Workbook
+from pyDEA.core.data_processing.xlsx_workbook import XlsxWorkbook
 import datetime
 
 from pyDEA.core.models.maximize_slacks import MaximizeSlacksModel
@@ -20,7 +21,7 @@ import tests.utils_for_tests as utils_for_tests
 
 def test_maximize_slacks_usual():
     categories, xls_data, dmu_name, sheet_name = read_data(
-        'tests/DEA_example_data')
+        'tests/DEA_example_data.xlsx')
     coefficients, has_same_dmus = convert_to_dictionary(xls_data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True
@@ -48,7 +49,7 @@ def test_maximize_slacks_usual():
                                                    0.82539683, 0.5, 1],
                                             model_solution, data)
 
-    work_book = Workbook()
+    work_book = XlsxWorkbook()
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
@@ -58,7 +59,7 @@ def test_maximize_slacks_usual():
 
 def test_maximize_slacks_usual_weakly_disposable_vars():
     categories, xls_data, dmu_name, sheet_name = read_data(
-        'tests/DEA_example2_data')
+        'tests/DEA_example2_data.csv')
     coefficients, has_same_dmus = convert_to_dictionary(xls_data)
     assert has_same_dmus is False
     assert validate_data(categories, coefficients) is True
@@ -84,7 +85,7 @@ def test_maximize_slacks_usual_weakly_disposable_vars():
     utils_for_tests.check_efficiency_scores(dmus, [1, 0.86998617, 1, 1, 1, 1,
                                                    1, 1, 1, 0.6386574, 1],
                                             model_solution, data)
-    work_book = Workbook()
+    work_book = XlsxWorkbook()
     writer = FileWriter(Parameters(), work_book, datetime.datetime.today(),
                        (end_time - start_time).total_seconds())
     writer.write_data(model_solution)
