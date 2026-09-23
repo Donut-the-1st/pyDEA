@@ -91,13 +91,13 @@ class MaximizeSlacksModel(EnvelopmentModelBase):
         # change constraints
         for input_category in self.strongly_disposal_input_categories:
             name = self.model._constraints[input_category]
-            self.lp_model_max_slack.constraints[name].addterm(
+            self.lp_model_max_slack.constraints[name].expr.addterm(
                 input_slack_vars[input_category], 1)
             self.lp_model_max_slack.constraints[name].sense = pulp.LpConstraintEQ
 
         for output_category in self.strongly_disposal_output_categories:
             name = self.model._constraints[output_category]
-            self.lp_model_max_slack.constraints[name].addterm(
+            self.lp_model_max_slack.constraints[name].expr.addterm(
                 output_slack_vars[output_category], -1)
             self.lp_model_max_slack.constraints[name].sense = pulp.LpConstraintEQ
 
