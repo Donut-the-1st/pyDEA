@@ -11,7 +11,7 @@ def read(fname):
 
 setup(
     name="pyDEA",
-    version="1.6",
+    version="1.7",
     author="Andrea Raith, Olga Perederieieva",
     author_email="peredereeva@gmail.com",
     description=("Package for conducting data envelopment analysis"),
@@ -33,7 +33,7 @@ setup(
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux"
     ],
-    install_requires=['pulp>=1.6.1', 'openpyxl'],
+    install_requires=['pulp[cbc]>=1.6.1', 'openpyxl'],
     entry_points={
         'gui_scripts': [
             'pyDEA=pyDEA.main_gui:main',
