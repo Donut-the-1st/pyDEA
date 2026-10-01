@@ -6,7 +6,7 @@
             solution IDs.
 '''
 
-from pulp import LpStatus, LpStatusOptimal
+from pulp.constants import LpStatus, LpStatusOptimal
 import pickle
 import os
 
