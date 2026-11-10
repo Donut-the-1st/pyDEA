@@ -77,7 +77,7 @@ class DataTabFrameMock(DataTabFrame):
                          ParamsFrameMock(parent),
                          ['', '', ''], StringVar(master=parent),
                          StringVar(master=parent))
-        self.file_to_save = 'tests/test_file_save_data_frame_tab'
+        self.file_to_save = 'tests/test_file_save_data_frame_tab.xlsx'
         self.file_to_load = ''
         self.my_sheet_name = sheet_name
 
@@ -232,7 +232,8 @@ def _check_data_and_table(tab, categories, coefficients):
 
     for row in range(len(coefficients)):
         for count, val in enumerate(coefficients[row]):
-            assert tab.table.cells[row + 1][count].text_value.get() == str(val)
+            assert (tab.table.cells[row + 1][count].text_value.get() ==
+                    str(tab.data[row][count]))
             assert tab.data[row][count] == val
 
 

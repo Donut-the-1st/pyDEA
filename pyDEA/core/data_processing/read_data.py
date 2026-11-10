@@ -326,7 +326,7 @@ class XLSXReader(object):
             Returns:
                 bool: True if cell has non-empty value, False otherwise.
         '''
-        return cell.value is not None
+        return cell.value is not None and cell.value != ''
 
     def cell_is_not_blank(self, cell):
         ''' Checks if a given cell has blank value.

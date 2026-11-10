@@ -119,17 +119,17 @@ def test_add_row_multiple_pages(data_tab):
     data_tab.table_modifier_frame.add_rows()
     check_nb_rows(data_tab.table, nb_rows + 1)
     assert len(data_tab.data) == 25
-    assert data_tab.table.cells[20][0].text_value.get() == '20.0'
-    assert data_tab.table.cells[20][1].text_value.get() == '200.0'
-    assert data_tab.table.cells[20][2].text_value.get() == '100.0'
+    assert data_tab.table.cells[20][0].text_value.get() == '20'
+    assert data_tab.table.cells[20][1].text_value.get() == '200'
+    assert data_tab.table.cells[20][2].text_value.get() == '100'
     assert data_tab.navigation_frame.text_var_nb_pages.get() == '2 pages'
     data_tab.table_modifier_frame.row_str_var.set(5)
     data_tab.table_modifier_frame.add_rows()
     check_nb_rows(data_tab.table, nb_rows + 6)
     assert len(data_tab.data) == 25
-    assert data_tab.table.cells[25][0].text_value.get() == '25.0'
-    assert data_tab.table.cells[25][1].text_value.get() == '250.0'
-    assert data_tab.table.cells[25][2].text_value.get() == '125.0'
+    assert data_tab.table.cells[25][0].text_value.get() == '25'
+    assert data_tab.table.cells[25][1].text_value.get() == '250'
+    assert data_tab.table.cells[25][2].text_value.get() == '125'
     assert data_tab.navigation_frame.text_var_nb_pages.get() == '1 pages'
 
 
@@ -146,9 +146,9 @@ def test_remove_row_multiple_pages_change_page_number(data_tab):
     assert len(data_tab.data) == 25
     print('data_tab.data', data_tab.data)
     assert data_tab.navigation_frame.text_var_nb_pages.get() == '2 pages'
-    assert data_tab.table.cells[1][0].text_value.get() == '20.0'
-    assert data_tab.table.cells[1][1].text_value.get() == '200.0'
-    assert data_tab.table.cells[1][2].text_value.get() == '100.0'
+    assert data_tab.table.cells[1][0].text_value.get() == '20'
+    assert data_tab.table.cells[1][1].text_value.get() == '200'
+    assert data_tab.table.cells[1][2].text_value.get() == '100'
 
 
 def test_remove_column_empty_data(table):
