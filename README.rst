@@ -32,6 +32,18 @@ In order to install from source, download and unzip source files, open terminal 
 
 This command will create distribution files in *pyDEA* folder and write paths to all other installed files to files.txt.
 
+Windows Executable
+==================
+
+A standalone Windows build (no Python installation required) can be created with PyInstaller. From the project folder run:
+
+*>> powershell -ExecutionPolicy Bypass -File build_exe.ps1*
+
+This produces *dist\\pyDEA\\pyDEA.exe* (copy the whole *dist\\pyDEA* folder to distribute it). If `Inno Setup 6 <https://jrsoftware.org/isinfo.php>`_ is installed, an installer *dist\\pyDEA-setup.exe* is also created. The executable stores its log file and temporary files in *%LOCALAPPDATA%\\pyDEA*.
+
+To install PyInstaller run:
+*>> pip install pyinstaller*
+
 How to Run
 ==========
 
