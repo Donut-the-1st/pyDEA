@@ -11,7 +11,7 @@ from pyDEA.core.data_processing.read_data import validate_data
 from pyDEA.core.data_processing.read_data import construct_input_data_instance, read_data
 from pyDEA.core.data_processing.read_data import convert_to_dictionary
 from pyDEA.core.utils.dea_utils import create_params_str, auto_name_if_needed
-from pyDEA.core.utils.dea_utils import get_logger
+from pyDEA.core.utils.dea_utils import get_logger, ZERO_TOLERANCE
 from pyDEA.core.data_processing.write_data import FileWriter
 from pyDEA.core.data_processing.xlsx_workbook import XlsxWorkbook
 import pyDEA.core.utils.model_builder as model_builder
@@ -376,7 +376,8 @@ def derive_returns_to_scale_classification(param_strs, solutions):
         and the VRS models. See the following algorithm for more detail: 
 
         For a DMUo
-            If CRSeff of DMUo  = VRSeff of DMUo then classify DMUo as CRS
+            If CRSeff of DMUo  = VRSeff of DMUo (within numerical tolerance),
+            classify DMUo as CRS
             Else
                 If sum of DMUo’s CRS lambdas < 1 then classify DMUo as IRS
                 Else classify DMUo as DRS
@@ -415,7 +416,8 @@ def derive_returns_to_scale_classification(param_strs, solutions):
             if solution_crs._input_data.DMU_code_to_user_name[dmu_code] != solution_vrs._input_data.DMU_code_to_user_name[dmu_code]:
                 raise Exception("Cannot find DMU" + solution_vrs._input_data.DMU_code_to_user_name[dmu_code] + "in the VRS model")
         
-            if solution_crs.efficiency_scores[dmu_code] == solution_vrs.efficiency_scores[dmu_code]:
+            if abs(solution_crs.efficiency_scores[dmu_code] -
+                   solution_vrs.efficiency_scores[dmu_code]) <= ZERO_TOLERANCE:
                 RTS_classification[dmu_code] = 'CRS'
             else: 
                 all_lambda_vars = solution_crs.get_lambda_variables(dmu_code)
