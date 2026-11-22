@@ -28,7 +28,7 @@ class InputOrientedModel(object):
                 double: value of obj_variable, since efficiency score is in
                     the interval [0, 1] for input-oriented model.
         '''
-        if obj_value > 1 and obj_value <= 1 + ZERO_TOLERANCE:
+        if 1 < obj_value <= 1 + ZERO_TOLERANCE:
             return 1.0
         return obj_value
 
