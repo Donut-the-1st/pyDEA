@@ -33,7 +33,7 @@ setup(
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux"
     ],
-    install_requires=['pulp<4.0.0', 'openpyxl'],
+    install_requires=['pulp>=3,<4', 'openpyxl'],
     entry_points={
         'gui_scripts': [
             'pyDEA=pyDEA.main_gui:main',

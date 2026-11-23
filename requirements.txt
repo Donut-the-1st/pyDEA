@@ -1,2 +1,2 @@
-pulp>=1.6.1
+pulp>=3,<4
 openpyxl

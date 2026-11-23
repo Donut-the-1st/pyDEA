@@ -3,7 +3,9 @@ $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 
 python -m pip install -r requirements.txt pyinstaller
+if ($LASTEXITCODE -ne 0) { throw "pip install failed (exit code $LASTEXITCODE)" }
 python -m PyInstaller pyDEA.spec --noconfirm --clean
+if ($LASTEXITCODE -ne 0) { throw "PyInstaller failed (exit code $LASTEXITCODE)" }
 
 $iscc = @(
     "$env:ProgramFiles\Inno Setup 6\ISCC.exe",
@@ -13,6 +15,7 @@ $iscc = @(
 
 if ($iscc) {
     & $iscc installer\pyDEA.iss
+    if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed (exit code $LASTEXITCODE)" }
 } else {
     Write-Warning 'Inno Setup 6 not found; skipping installer. Folder build is in dist\pyDEA.'
 }

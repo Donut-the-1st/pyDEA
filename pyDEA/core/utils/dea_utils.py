@@ -39,6 +39,10 @@ import os
 from importlib.resources import files
 import logging
 from logging.config import fileConfig
+import subprocess
+import types
+
+import pulp
 
 LOG_FILE = 'logging_config.ini'
 PACKAGE = 'pyDEA'
@@ -83,6 +87,61 @@ class ObserverStringVar(StringVar):
         self.input_categories = []
 
 
+class _NoConsoleSubprocess(object):
+    ''' Stand-in for the subprocess module that PuLP's CBC launcher uses.
+        Every attribute is taken from the real module, except Popen, which
+        also passes CREATE_NO_WINDOW so that cbc.exe never gets a console.
+
+        Without it, Windows creates a new console for every LP solved
+        (one per DMU) whenever pyDEA has no console of its own (the packaged
+        exe, pythonw, some IDE runs). That costs 0.2-0.3 s per solve when
+        pyDEA is in the background and around 5 s per solve when it is in
+        the foreground.
+    '''
+    def __init__(self, module):
+        self._module = module
+
+    def __getattr__(self, name):
+        return getattr(self._module, name)
+
+    def Popen(self, *args, **kwargs):
+        kwargs['creationflags'] = (kwargs.get('creationflags', 0) |
+                                   self._module.CREATE_NO_WINDOW)
+        return self._module.Popen(*args, **kwargs)
+
+
+_lp_solver = None
+
+
+def get_lp_solver():
+    ''' Returns the solver used for all DEA linear programs: the CBC binary
+        bundled with PuLP, with its output switched off.
+
+        On Windows, the first call also makes PuLP start cbc.exe without a
+        console window (see _NoConsoleSubprocess). If PuLP's internals ever
+        change so that this cannot be done, only msg=False is applied.
+
+        Returns:
+            pulp.LpSolver: solver instance to pass to LpProblem.solve().
+
+        Raises:
+            RuntimeError: if the CBC solver is not available.
+    '''
+    global _lp_solver
+    if _lp_solver is None:
+        if os.name == 'nt':
+            from pulp.apis import coin_api
+            if isinstance(getattr(coin_api, 'subprocess', None),
+                          types.ModuleType):
+                coin_api.subprocess = _NoConsoleSubprocess(subprocess)
+        solver = pulp.PULP_CBC_CMD(msg=False)
+        if not solver.available():
+            raise RuntimeError('The CBC solver bundled with PuLP was not '
+                               'found or cannot be executed.')
+        _lp_solver = solver
+    return _lp_solver
+
+
 def get_logger():
     ''' Gets a logger with all configuration specified in file ini-file.
 
@@ -117,16 +176,15 @@ def change_to_unique_name_if_needed(file_name):
 
 
 def clean_up_pickled_files():
-    ''' Removes mps-files from current folder and p-files from temporary folder.
+    ''' Removes p-files from temporary folder.
+
+        PuLP writes its own temporary (mps, sol) files to the system temp
+        directory and deletes them itself, so no other cleanup is needed.
     '''
     if os.path.exists(TMP_FOLDER):
         filelist = [f for f in os.listdir(TMP_FOLDER) if f.endswith('.p')]
         for f in filelist:
             os.remove(os.path.join(TMP_FOLDER, f))
-    # remove mps file if any
-    filelist = [f for f in os.listdir('.') if f.endswith('.mps')]
-    for f in filelist:
-        os.remove(f)
 
 
 def format_data(data):

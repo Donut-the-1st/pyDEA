@@ -4,6 +4,7 @@
 
 from pyDEA.core.data_processing.solution import Solution
 from pyDEA.core.utils.dea_utils import check_input_and_output_categories
+from pyDEA.core.utils.dea_utils import get_lp_solver
 
 
 def do_nothing():
@@ -59,7 +60,7 @@ class ModelBase(object):
                 model_solution (Solution): solution.
         '''
         self._update_lp(dmu_code)
-        self.lp_model.solve()
+        self.lp_model.solve(get_lp_solver())
         self._fill_solution(dmu_code, model_solution)
 
     def _fill_solution(self, dmu_code, model_solution):

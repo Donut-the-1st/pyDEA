@@ -202,7 +202,10 @@ def test_clean_up_pickled_files():
         with open(os.path.join(dea_utils.TMP_FOLDER, file_name2), 'w'):
             pass
     dea_utils.clean_up_pickled_files()
-    assert os.path.exists(file_name) is False
+    # mps files in the working directory may belong to the user and
+    # must not be removed (PuLP keeps its temporary files in %TEMP%)
+    assert os.path.exists(file_name) is True
+    os.remove(file_name)
     for i in range(5):
         file_name2 = 'tmp_{0}.p'.format(i)
         assert os.path.exists(os.path.join(

@@ -168,9 +168,12 @@ class TxtWriter(object):
         for file_ref in self.tabs:
             file_ref.close()
         for saved_file_name, tab_writer in self.tab_writers:
-            new_name = '{0}.csv'.format(tab_writer.name)
+            new_name = os.path.join(self.folder_name,
+                                    '{0}.csv'.format(tab_writer.name))
+            if os.path.abspath(new_name) == os.path.abspath(saved_file_name):
+                continue  # already has its final name
             new_name = change_to_unique_name_if_needed(new_name)
-            os.rename(saved_file_name, os.path.join(self.folder_name, new_name))
+            os.rename(saved_file_name, new_name)
 
 
 class OneCsvWriter(object):

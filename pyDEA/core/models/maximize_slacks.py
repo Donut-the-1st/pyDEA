@@ -4,6 +4,7 @@
 import pulp
 
 from pyDEA.core.models.envelopment_model_base import EnvelopmentModelBase
+from pyDEA.core.utils.dea_utils import get_lp_solver
 
 
 class MaximizeSlacksModel(EnvelopmentModelBase):
@@ -49,7 +50,7 @@ class MaximizeSlacksModel(EnvelopmentModelBase):
         self.model.lp_model = self.lp_model_max_slack
         self.model._update_lp(dmu_code)
         self.model.lp_model = lp_model_copy
-        self.lp_model_max_slack.solve()
+        self.lp_model_max_slack.solve(get_lp_solver())
         self.model._should_add_efficiency = False  # keep efficiency
          # calculated previously
         assert(self.second_solution is not None)

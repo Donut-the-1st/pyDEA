@@ -148,11 +148,13 @@ class MultiplierModelBase(ModelBase):
             Returns:
                 double: efficiency spyDEA.core.
         '''
-        eff_score = self._concrete_model.process_obj_var(pulp.value(
-            self.lp_model.objective))
-        # None is possible when objective function is zero
-        if eff_score is None:
+        obj_value = pulp.value(self.lp_model.objective)
+        # None is possible when objective function is zero; it must be
+        # handled before process_obj_var, which cannot compare None
+        if obj_value is None:
             eff_score = 0
+        else:
+            eff_score = self._concrete_model.process_obj_var(obj_value)
         if is_efficient(eff_score, lambda_variable):
             eff_score = 1
         return eff_score

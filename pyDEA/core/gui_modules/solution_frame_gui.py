@@ -142,12 +142,9 @@ class SolutionFrame(Notebook):
     def remove_unused_tabs(self):
         ''' Removes unused tabs.
         '''
-        if self.nb_filled_tabs < self.nb_tabs:
-            i = self.nb_tabs-1
-            while self.nb_tabs != self.nb_filled_tabs:
-                self.all_tabs[i].destroy()
-                self.all_tabs.pop(i)
-                self.nb_tabs -= 1
+        while self.nb_tabs > self.nb_filled_tabs:
+            self.all_tabs.pop().destroy()
+            self.nb_tabs -= 1
 
 
 class SolutionFrameWithText(SolutionFrame):

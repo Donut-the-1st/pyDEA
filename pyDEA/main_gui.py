@@ -49,6 +49,8 @@ class MainFrame(Frame):
         self.weights_status_str = StringVar()
         self.weights_status_str.trace_add('write', self.on_weights_status_change)
         self.current_categories = []
+        self.run_btn = None
+        self.is_running = False
         self.create_widgets()
 
     def create_widgets(self):
@@ -86,8 +88,8 @@ class MainFrame(Frame):
         self.progress_bar = Progressbar(self, mode='determinate', maximum=100)
         self.progress_bar.grid(row=2, column=0, sticky=W+E, padx=10, pady=5)
 
-        run_btn = Button(self, text='Run', command=self.run)
-        run_btn.grid(row=2, column=1, sticky=W, padx=10, pady=10)
+        self.run_btn = Button(self, text='Run', command=self.run)
+        self.run_btn.grid(row=2, column=1, sticky=W, padx=10, pady=10)
 
         self.weights_status_lbl = Label(self, text='', foreground='red')
         self.weights_status_lbl.grid(row=2, column=2, padx=10, pady=5, sticky=W)
@@ -101,10 +103,21 @@ class MainFrame(Frame):
         ''' This method is called when the user presses Run button.
             Solves the problem and displays solution.
         '''
-        clean_up_pickled_files()
-        params = self.params_frame.params
-        run_method = RunMethodGUI(self)
-        run_method.run(params)
+        # The solve runs on this (GUI) thread, and progress updates pump the
+        # event loop, so a second click on Run could start a nested run.
+        if self.is_running:
+            return
+        self.is_running = True
+        self.run_btn.state(['disabled'])
+        try:
+            clean_up_pickled_files()
+            params = self.params_frame.params
+            run_method = RunMethodGUI(self)
+            run_method.run(params)
+        finally:
+            self.is_running = False
+            if self.run_btn.winfo_exists():
+                self.run_btn.state(['!disabled'])
 
     def construct_categories(self):
         ''' Returns current categories.
@@ -130,6 +143,11 @@ def ask_quit(main_frame):
         Args:
             main_frame (MainFrame): main application GUI.
     '''
+    if main_frame.is_running:
+        # destroying the window mid-solve would make the running solve
+        # fail on its next widget update
+        main_frame.bell()
+        return
     if '*' in main_frame.data_frame.tab(1, option='text'):
         if askyesno("Verify", "Do you want to save solution before quitting?"):
             main_frame.data_frame.solution_tab.on_save_solution()
