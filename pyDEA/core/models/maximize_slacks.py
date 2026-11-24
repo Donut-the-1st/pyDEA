@@ -4,7 +4,10 @@
 import pulp
 
 from pyDEA.core.models.envelopment_model_base import EnvelopmentModelBase
-from pyDEA.core.utils.dea_utils import get_lp_solver
+from pyDEA.core.utils.dea_utils import get_lp_solver, ZERO_TOLERANCE
+
+# relative tolerance used to fix the phase-1 objective variable in phase 2
+PHASE_ONE_OBJECTIVE_TOLERANCE = 1e-7
 
 
 class MaximizeSlacksModel(EnvelopmentModelBase):
@@ -19,7 +22,10 @@ class MaximizeSlacksModel(EnvelopmentModelBase):
                 two-phase model.
             second_solution (Solution): solution obtained after second
                 phase.
-            lp_model_max_slack (pulp.LpProblem): pulp LP.
+            _input_slack_vars (dict of str to pulp.LpVariable): slack
+                variables of strongly disposable input categories.
+            _output_slack_vars (dict of str to pulp.LpVariable): slack
+                variables of strongly disposable output categories.
 
         Args:
             model (EnvelopmentModelBase): envelopment model.
@@ -37,33 +43,86 @@ class MaximizeSlacksModel(EnvelopmentModelBase):
             weakly_disposable_categories)
         self.model = model
         self.second_solution = None
-        self.lp_model_max_slack = None
+        self._input_slack_vars = {}
+        self._output_slack_vars = {}
 
     def __getattr__(self, name):
         return getattr(self.model, name)
 
     def run_for_one_DMU(self, dmu_code, model_solution):
-        ''' See base class.
+        ''' Solves phase 1 for a given DMU, then phase 2: with the phase-1
+            objective variable (theta or phi) fixed, maximises the sum of
+            slacks of all strongly disposable categories.
+
+            Phase 2 is built from a copy of the phase-1 LP after it has
+            been updated for this DMU, so every decorator (VRS, weight
+            restrictions, super efficiency) is already applied to it.
+            The second solution gets the phase-1 efficiency score and duals,
+            and the phase-2 LP status and lambda variables.
+
+            Note:
+                With weight restrictions, their extra variables stay in the
+                copied constraints and only restrict feasibility in phase 2.
         '''
         self.model.run_for_one_DMU(dmu_code, model_solution)
-        lp_model_copy = self.model.lp_model
-        self.model.lp_model = self.lp_model_max_slack
-        self.model._update_lp(dmu_code)
-        self.model.lp_model = lp_model_copy
-        self.lp_model_max_slack.solve(get_lp_solver())
-        self.model._should_add_efficiency = False  # keep efficiency
-         # calculated previously
-        assert(self.second_solution is not None)
-        lp_model_copy = self.model.lp_model
-        self.model.lp_model = self.lp_model_max_slack
+        assert self.second_solution is not None
+        # copies phase-1 status, efficiency, lambdas and duals (including
+        # those added by decorators) into the second solution
         self.model._fill_solution(dmu_code, self.second_solution)
-        # sometimes
-        # we can have optimal solution in second phase for a DMU
-        # for which we had unbounded solution in the first phase
-        self.second_solution.efficiency_scores[dmu_code] = float('inf')
-        self.model._should_add_efficiency = True
-        self.fill_efficiency(model_solution)
-        self.model.lp_model = lp_model_copy
+        if self.model.lp_model.status != pulp.LpStatusOptimal:
+            return
+
+        lp_phase_two = self._create_phase_two_lp()
+        lp_phase_two.solve(get_lp_solver())
+        self.second_solution.add_lp_status(dmu_code, lp_phase_two.status)
+        if lp_phase_two.status == pulp.LpStatusOptimal:
+            # LpProblem.deepcopy shares variables, so the lambda variables
+            # now hold phase-2 values
+            lambda_variables = dict()
+            for dmu in self.input_data.DMU_codes:
+                var = self.model._variables.get(dmu, None)
+                if (var is not None and var.varValue is not None and
+                        abs(var.varValue) > ZERO_TOLERANCE):
+                    lambda_variables[dmu] = var.varValue
+            self.second_solution.add_lambda_variables(dmu_code,
+                                                      lambda_variables)
+
+    def _create_phase_two_lp(self):
+        ''' Creates the phase-2 LP from the phase-1 LP that has just been
+            solved for the current DMU.
+
+            Returns:
+                pulp.LpProblem: phase-2 LP.
+        '''
+        lp_phase_two = self.model.lp_model.deepcopy()
+        lp_phase_two.sense = pulp.LpMaximize
+        lp_phase_two.objective = (
+            pulp.lpSum(list(self._input_slack_vars.values())) +
+            pulp.lpSum(list(self._output_slack_vars.values())))
+
+        # constraints of both inputs and outputs have the form expr >= 0,
+        # the slack is the surplus: expr - slack = 0
+        for category, slack in list(self._input_slack_vars.items()) + list(
+                self._output_slack_vars.items()):
+            constraint = lp_phase_two.constraints[
+                self.model._constraints[category]]
+            constraint.expr.addterm(slack, -1)
+            constraint.sense = pulp.LpConstraintEQ
+
+        # Fix the efficiency score (or its inverse) at its phase-1 value.
+        # Constraints are used instead of variable bounds, because variables
+        # are shared with the phase-1 LP. CBC reports values with about 8
+        # significant digits, so fixing the rounded value exactly can make
+        # phase 2 infeasible (e.g. 11/9 reported as 1.2222222); a narrow
+        # band around it is allowed instead.
+        obj_var = self.model._variables['obj_var']
+        obj_value = obj_var.varValue
+        band = PHASE_ONE_OBJECTIVE_TOLERANCE * max(1.0, abs(obj_value))
+        lp_phase_two += (obj_var >= obj_value - band,
+                         'phase_one_objective_lower')
+        lp_phase_two += (obj_var <= obj_value + band,
+                         'phase_one_objective_upper')
+        return lp_phase_two
 
     # we need to explicitly redirect all calls to model since this class
     # inherits from EnvelopmentModelBase and all methods are defined there.
@@ -74,33 +133,12 @@ class MaximizeSlacksModel(EnvelopmentModelBase):
         ''' See base class.
         '''
         self.model._create_lp()
-        self.lp_model_max_slack = self.model.lp_model.deepcopy()
-
-        input_slack_vars = pulp.LpVariable.dicts(
+        self._input_slack_vars = pulp.LpVariable.dicts(
             'input_slack', self.strongly_disposal_input_categories,
             0, None, pulp.LpContinuous)
-        output_slack_vars = pulp.LpVariable.dicts(
+        self._output_slack_vars = pulp.LpVariable.dicts(
             'output_slack', self.strongly_disposal_output_categories,
             0, None, pulp.LpContinuous)
-
-        # change objective function
-        self.lp_model_max_slack.sense = pulp.LpMaximize
-        self.lp_model_max_slack.objective = (
-            pulp.lpSum(list(input_slack_vars.values())) +
-            pulp.lpSum(list(output_slack_vars.values())))
-
-        # change constraints
-        for input_category in self.strongly_disposal_input_categories:
-            name = self.model._constraints[input_category]
-            self.lp_model_max_slack.constraints[name].expr.addterm(
-                input_slack_vars[input_category], 1)
-            self.lp_model_max_slack.constraints[name].sense = pulp.LpConstraintEQ
-
-        for output_category in self.strongly_disposal_output_categories:
-            name = self.model._constraints[output_category]
-            self.lp_model_max_slack.constraints[name].expr.addterm(
-                output_slack_vars[output_category], -1)
-            self.lp_model_max_slack.constraints[name].sense = pulp.LpConstraintEQ
 
     def _update_lp(self, dmu_code):
         ''' See base class.
@@ -136,14 +174,3 @@ class MaximizeSlacksModel(EnvelopmentModelBase):
         '''
         self.second_solution = self.model._create_solution()
         return self.model._create_solution()
-
-    def fill_efficiency(self, model_solution):
-        ''' Copies efficiency scores from the solution obtained from
-            the first phase to the solution of the second phase.
-
-            Args:
-                model_solution (Solution): solution obtained from the
-                    first phase.
-        '''
-        for dmu_code, score in model_solution.efficiency_scores.items():
-            self.second_solution.add_efficiency_score(dmu_code, score)
