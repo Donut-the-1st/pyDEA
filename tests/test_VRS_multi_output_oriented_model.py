@@ -35,21 +35,11 @@ def test_VRS_multi_output_oriented_small(model, data):
     utils_for_tests.check_lambda_variables('D', 'D', 1, model_solution, data)
     utils_for_tests.check_lambda_variables('E', 'E', 1, model_solution, data)
 
-    utils_for_tests.check_categories_for_dmu(
-        'A', ['x1', 'x2', 'q'], [0.25, 0, 1], model_solution, data)
-    utils_for_tests.check_categories_for_dmu(
-        'B', ['x1', 'x2', 'q'], [0.125, 0, 0.5], model_solution, data)
-    utils_for_tests.check_categories_for_dmu(
-        'C', ['x1', 'x2', 'q'], [0.083333333, 0, 0.33333333], model_solution,
-        data)
-    utils_for_tests.check_categories_for_dmu(
-        'D', ['x1', 'x2', 'q'], [0.33333333, 0.66666667, 1], model_solution,
-        data)
-    utils_for_tests.check_categories_for_dmu(
-        'E', ['x1', 'x2', 'q'], [0, 0.125, 0.5], model_solution, data)
-
-    utils_for_tests.check_VRS_duals(
-        dmus, [1.5, 0.75, 0.5, -1.3333333, 0.75], model_solution, data)
+    # The optimal weights of D and E are not unique and CBC can return
+    # extreme values for them, so any valid optimal solution is accepted
+    # instead of one particular weight vector (and VRS intercept).
+    utils_for_tests.check_multiplier_solution_consistent(
+        model_solution, data, dmus, 'output', vrs=True)
 
 
 def test_VRS_multi_output_oriented_with_weakly_disposable_vars_small(data):
@@ -69,18 +59,9 @@ def test_VRS_multi_output_oriented_with_weakly_disposable_vars_small(data):
     utils_for_tests.check_lambda_variables('E', 'E', 1, model_solution, data)
     utils_for_tests.check_lambda_variables('D', 'D', 1, model_solution, data)
 
-    utils_for_tests.check_categories_for_dmu(
-        'A', ['x1', 'x2', 'q'], [0.25, 0, 1], model_solution, data)
-    utils_for_tests.check_categories_for_dmu(
-        'B', ['x1', 'x2', 'q'], [0.125, 0, 0.5], model_solution, data)
-    utils_for_tests.check_categories_for_dmu(
-        'C', ['x1', 'x2', 'q'], [0.083333333, 0, 0.33333333], model_solution,
-        data)
-    utils_for_tests.check_categories_for_dmu(
-        'D', ['x1', 'x2', 'q'], [0.33333333, 0.66666667, 1], model_solution,
-        data)
-    utils_for_tests.check_categories_for_dmu(
-        'E', ['x1', 'x2', 'q'], [0, 0.125, 0.5], model_solution, data)
-
-    utils_for_tests.check_VRS_duals(
-        dmus, [1.5, 0.75, 0.5, -1.3333333, 0.75], model_solution, data)
+    # The optimal weights of D and E are not unique and CBC can return
+    # extreme values for them, so any valid optimal solution is accepted
+    # instead of one particular weight vector (and VRS intercept).
+    utils_for_tests.check_multiplier_solution_consistent(
+        model_solution, data, dmus, 'output', vrs=True,
+        free_categories={'q'})

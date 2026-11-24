@@ -52,12 +52,40 @@ class Solution(object):
         self.input_duals = dict()
         self.output_duals = dict()
         self.return_to_scale = dict()
+        self.numerical_warnings = dict()
         for dmu_code in input_data.DMU_codes:
             self.input_duals[dmu_code] = dict()
             self.output_duals[dmu_code] = dict()
 
         if not os.path.exists(TMP_FOLDER):
             os.makedirs(TMP_FOLDER)
+
+    def add_numerical_warning(self, dmu_code, message):
+        ''' Records a warning about the numerical reliability of the
+            solution of a given DMU, for example if the values returned by
+            the solver are inconsistent.
+
+            Args:
+                dmu_code (str): DMU code.
+                message (str): description of the problem.
+        '''
+        self.numerical_warnings.setdefault(dmu_code, []).append(message)
+
+    def get_numerical_warnings(self, dmu_code=None):
+        ''' Returns warnings about numerical reliability of the solution.
+
+            Args:
+                dmu_code (str, optional): DMU code. If None, warnings of
+                    all DMUs are returned.
+
+            Returns:
+                list of str or dict of str to list of str: warnings of the
+                    given DMU, or dictionary that maps DMU codes to their
+                    warnings.
+        '''
+        if dmu_code is None:
+            return self.numerical_warnings
+        return self.numerical_warnings.get(dmu_code, [])
 
     def add_efficiency_score(self, dmu_code, efficiency_score):
         ''' Adds efficiency score of a given DMU to internal

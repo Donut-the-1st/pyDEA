@@ -71,18 +71,11 @@ def test_CRS_multi_output_oriented_with_weakly_disposable_vars_small(data):
     utils_for_tests.check_lambda_variables('D', 'E', 0.4, model_solution, data)
     utils_for_tests.check_lambda_variables('E', 'E', 1, model_solution, data)
 
-    utils_for_tests.check_categories_for_dmu(
-        'A', ['x1', 'x2', 'q'], [1, 0, 1], model_solution, data)
-    utils_for_tests.check_categories_for_dmu(
-        'B', ['x1', 'x2', 'q'], [0.5, 0, 0.5], model_solution, data)
-    utils_for_tests.check_categories_for_dmu('C', ['x1', 'x2', 'q'], [
-                                             0.066666667, 0.13333333,
-                                             0.33333333], model_solution,
-                                             data)
-    utils_for_tests.check_categories_for_dmu(
-        'D', ['x1', 'x2', 'q'], [0.2, 0.4, 1], model_solution, data)
-    utils_for_tests.check_categories_for_dmu(
-        'E', ['x1', 'x2', 'q'], [0.1, 0.2, 0.5], model_solution, data)
+    # The optimal weights of D and E are not unique and CBC can return
+    # extreme values for them, so any valid optimal solution is accepted
+    # instead of one particular weight vector.
+    utils_for_tests.check_multiplier_solution_consistent(
+        model_solution, data, dmus, 'output', free_categories={'x1'})
 
 
 def test_CRS_multi_output_oriented_with_non_discretionary_vars_with_error(data):
