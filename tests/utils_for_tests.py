@@ -116,6 +116,113 @@ def check_VRS_duals(dmus, expected_values, model_solution, data):
                                            dmu]) == expected_values[count]
 
 
+MULTIPLIER_CONSISTENCY_TOLERANCE = 1e-6
+MAX_CANCELLATION_RATIO = 1e4
+
+
+def check_multiplier_solution_consistent(
+        model_solution, data, dmus, orientation, vrs=False,
+        free_categories=(), tolerance=MULTIPLIER_CONSISTENCY_TOLERANCE,
+        max_cancellation=MAX_CANCELLATION_RATIO):
+    ''' Checks that the weights (and VRS intercept) reported for each given
+        DMU form a valid optimal solution of the basic multiplier model,
+        whatever particular optimal solution the solver selected:
+        normalisation, objective value consistent with the efficiency
+        score, all DMU constraints, signs of weights of categories that are
+        not weakly disposable, no large cancellations (which would indicate
+        extreme values that lost their precision), and no numerical
+        warnings.
+
+        Only for models without weight restrictions and non-discretionary
+        categories.
+
+        Args:
+            model_solution (Solution): solution to check.
+            data (InputData): input data.
+            dmus (list of str): DMU user names to check.
+            orientation (str): 'input' or 'output'.
+            vrs (bool): True if the model has a VRS intercept.
+            free_categories (iterable of str): weakly disposable
+                categories, whose weights are free.
+            tolerance (double): absolute tolerance.
+            max_cancellation (double): maximum ratio between the sum of
+                absolute terms of a constraint and its value.
+    '''
+    assert orientation in ('input', 'output')
+
+    def weighted_sum(dmu_code, categories, weights):
+        terms = [data.coefficients[dmu_code, category] * weights[category]
+                 for category in categories]
+        return sum(terms), sum(abs(term) for term in terms)
+
+    def check_cancellation(value, abs_terms, what):
+        assert abs_terms <= max_cancellation * max(1.0, abs(value)), (
+            '{0}: sum of absolute terms {1} is too large for value {2}'
+            .format(what, abs_terms, value))
+
+    for dmu in dmus:
+        dmu_code = data._DMU_user_name_to_code[dmu]
+        assert model_solution.lp_status[dmu_code] == LpStatusOptimal
+        input_weights = {category: model_solution.get_input_dual(
+            dmu_code, category) for category in data.input_categories}
+        output_weights = {category: model_solution.get_output_dual(
+            dmu_code, category) for category in data.output_categories}
+        intercept = model_solution.get_VRS_dual(dmu_code) if vrs else 0
+        weights = dict(input_weights)
+        weights.update(output_weights)
+        for category, weight in weights.items():
+            if category not in free_categories:
+                assert weight >= -tolerance, (
+                    'DMU {0}: weight of {1} is negative: {2}'.format(
+                        dmu, category, weight))
+
+        virtual_input, abs_input = weighted_sum(
+            dmu_code, data.input_categories, input_weights)
+        virtual_output, abs_output = weighted_sum(
+            dmu_code, data.output_categories, output_weights)
+        efficiency = model_solution.get_efficiency_score(dmu_code)
+        if orientation == 'output':
+            normalisation, abs_normalisation = virtual_output, abs_output
+            objective = virtual_input + intercept
+            abs_objective = abs_input + abs(intercept)
+            expected_objective = 1.0 / efficiency
+        else:
+            normalisation, abs_normalisation = virtual_input, abs_input
+            objective = virtual_output + intercept
+            abs_objective = abs_output + abs(intercept)
+            expected_objective = efficiency
+        assert abs(normalisation - 1) <= tolerance, (
+            'DMU {0}: normalisation is {1}'.format(dmu, normalisation))
+        check_cancellation(normalisation, abs_normalisation,
+                           'DMU {0} normalisation'.format(dmu))
+        assert abs(objective - expected_objective) <= tolerance * max(
+            1.0, abs(expected_objective)), (
+            'DMU {0}: objective recomputed from weights is {1}, efficiency '
+            'score corresponds to {2}'.format(dmu, objective,
+                                              expected_objective))
+        check_cancellation(objective, abs_objective,
+                           'DMU {0} objective'.format(dmu))
+
+        for other_code in data.DMU_codes:
+            other_input, other_abs_input = weighted_sum(
+                other_code, data.input_categories, input_weights)
+            other_output, other_abs_output = weighted_sum(
+                other_code, data.output_categories, output_weights)
+            if orientation == 'output':
+                row = other_output - other_input - intercept
+            else:
+                row = other_output - other_input + intercept
+            other = data.get_dmu_user_name(other_code)
+            assert row <= tolerance, (
+                'DMU {0}: constraint of DMU {1} is violated by {2}'.format(
+                    dmu, other, row))
+            check_cancellation(row, other_abs_input + other_abs_output +
+                               abs(intercept), 'DMU {0}, constraint of DMU {1}'
+                               .format(dmu, other))
+
+        assert model_solution.get_numerical_warnings(dmu_code) == []
+
+
 def _check_lower_bound(dual_value, lower_bound):
     assert dual_value + WEIGHT_RESTRICTION_TOLERANCE >= lower_bound
 
